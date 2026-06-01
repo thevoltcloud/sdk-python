@@ -1,6 +1,6 @@
 # Volt Python SDK
 
-Python SDK for [Volt](https://volt.cloud) — the Sovereign Inference Cloud.
+Python SDK for [Volt](https://voltcloud.ai) — the Sovereign Inference Cloud.
 OpenAI drop-in for Spark, with first-class support for the sovereign tier, metro
 pinning, and pod affinity.
 

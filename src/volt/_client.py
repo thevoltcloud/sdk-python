@@ -19,7 +19,7 @@ from .types import VoltMeta
 # Indirection so tests can monkeypatch sleeping.
 _sleep = time.sleep
 
-DEFAULT_BASE_URL = "https://api.volt.cloud"
+DEFAULT_BASE_URL = "https://api.voltcloud.ai"
 
 
 class Volt:
