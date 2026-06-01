@@ -1,0 +1,4 @@
+# CODEOWNERS — thevoltcloud/sdk-python
+# Convention (handbook): repos target >=2 owners. Interim single maintainer
+# until the Developer Experience team is hired (Series A).
+*                   @ar4mirez

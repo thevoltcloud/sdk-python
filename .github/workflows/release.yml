@@ -1,0 +1,56 @@
+# Release thevoltcloud/sdk-python to PyPI on a version tag.
+# Build -> SLSA L3 provenance (org reusable workflow) -> publish via PyPI
+# Trusted Publishing (OIDC, no stored token).
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      digests: ${{ steps.hash.outputs.digests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build
+      - run: python -m build
+      - name: Hash artifacts for provenance
+        id: hash
+        run: |
+          cd dist
+          echo "digests=$(sha256sum * | base64 -w0)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  provenance:
+    needs: [build]
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: thevoltcloud/.github/.github/workflows/shared-slsa-provenance.yml@main
+    with:
+      base64-subjects: ${{ needs.build.outputs.digests }}
+
+  publish:
+    needs: [build, provenance]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # PyPI Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
